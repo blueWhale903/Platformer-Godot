@@ -1,0 +1,108 @@
+[gd_scene load_steps=27 format=2]
+
+[ext_resource path="res://Assets/Individual Sprites/adventurer-idle-00.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/Player.gd" type="Script" id=2]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-idle-02.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-idle-01.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-idle-03.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-run-02.png" type="Texture" id=6]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-run-01.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-run-04.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-run-05.png" type="Texture" id=9]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-run-00.png" type="Texture" id=10]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-run-03.png" type="Texture" id=11]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-jump-00.png" type="Texture" id=12]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-jump-01.png" type="Texture" id=13]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-jump-03.png" type="Texture" id=14]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-jump-02.png" type="Texture" id=15]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-fall-01.png" type="Texture" id=16]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-fall-00.png" type="Texture" id=17]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-wall-slide-01.png" type="Texture" id=18]
+[ext_resource path="res://Assets/Individual Sprites/adventurer-wall-slide-00.png" type="Texture" id=19]
+[ext_resource path="res://Assets/Individual Sprites/air_attack/1/adventurer-air-attack1-03.png" type="Texture" id=20]
+[ext_resource path="res://Assets/Individual Sprites/air_attack/1/adventurer-air-attack1-00.png" type="Texture" id=21]
+[ext_resource path="res://Assets/Individual Sprites/air_attack/1/adventurer-air-attack1-02.png" type="Texture" id=22]
+[ext_resource path="res://Assets/Individual Sprites/air_attack/1/adventurer-air-attack1-01.png" type="Texture" id=23]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 14.8252, 28.8621 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 1 ), ExtResource( 4 ), ExtResource( 3 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "idle",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 10 ), ExtResource( 7 ), ExtResource( 6 ), ExtResource( 11 ), ExtResource( 8 ), ExtResource( 9 ) ],
+"loop": true,
+"name": "walk",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 17 ), ExtResource( 16 ) ],
+"loop": true,
+"name": "fall",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 12 ), ExtResource( 13 ), ExtResource( 15 ), ExtResource( 14 ) ],
+"loop": false,
+"name": "jump",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 21 ), ExtResource( 23 ), ExtResource( 22 ), ExtResource( 20 ) ],
+"loop": false,
+"name": "air_attack",
+"speed": 12.0
+}, {
+"frames": [ ExtResource( 19 ), ExtResource( 18 ) ],
+"loop": true,
+"name": "wall_slide",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 7.59417, 12.3131 )
+
+[node name="Player" type="KinematicBody2D"]
+z_index = 999
+collision_layer = 2
+collision_mask = 5
+script = ExtResource( 2 )
+speed = Vector2( 500, 700 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+zoom = Vector2( 0.7, 0.7 )
+drag_margin_h_enabled = true
+drag_margin_v_enabled = true
+drag_margin_bottom = 0.25
+editor_draw_drag_margin = true
+
+[node name="RightRayCast" type="RayCast2D" parent="."]
+enabled = true
+cast_to = Vector2( 20, 0 )
+
+[node name="LeftRayCast" type="RayCast2D" parent="."]
+enabled = true
+cast_to = Vector2( -20, 0 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0.943878, 7.31503 )
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+scale = Vector2( 2, 2 )
+frames = SubResource( 2 )
+animation = "air_attack"
+frame = 3
+playing = true
+
+[node name="AttackArea" type="Area2D" parent="AnimatedSprite"]
+collision_layer = 0
+collision_mask = 4
+
+[node name="AttackCollision" type="CollisionShape2D" parent="AnimatedSprite/AttackArea"]
+position = Vector2( 15.3796, 3.97748 )
+shape = SubResource( 3 )
+[connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
+[connection signal="body_entered" from="AnimatedSprite/AttackArea" to="." method="_on_AttackArea_body_entered"]
