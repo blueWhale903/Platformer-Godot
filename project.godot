@@ -17,7 +17,8 @@ _global_script_class_icons={
 
 config/name="platformer_test"
 run/main_scene="res://Scenes/Scene1.tscn"
-config/icon="res://icon.png"
+boot_splash/image="res://Assets/ground.png"
+config/icon="res://Assets/ground.png"
 
 [input]
 
